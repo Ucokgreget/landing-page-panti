@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  accessToken  String? @db.Text
+  refreshToken String? @db.Text
+
+  @@map("users")
+}
+
+model Home {
+  id        Int      @id @default(autoincrement())
+  judul     String
+  urutan    Int
+  status    Status   @default(ACTIVE)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  imageUrl  String?
+}
+
+model TentangKami {
+  id        Int      @id @default(autoincrement())
+  judul     String
+  isi       String
+  imageUrl  String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  items TentangKamiItem[]
+}
+
+enum KategoriTentangKami {
+  DAMPAK_POSITIF
+  INOVASI
+  PELAYANAN_PANTI
+}
+
+model TentangKamiItem {
+  id            Int                 @id @default(autoincrement())
+  kategori      KategoriTentangKami
+  title         String
+  desc          String?             @db.Text
+  icon          String
+  imageSrc      String
+  caption       String
+  urutan        Int
+  tentangKami   TentangKami         @relation(fields: [tentangKamiId], references: [id], onDelete: Cascade)
+  tentangKamiId Int
+
+  @@index([kategori])
+}
+
+model SopPanti {
+  id        Int      @id @default(autoincrement())
+  imageUrl  String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+}
+
+enum KategoriGaleri {
+  POSTER
+  VIDEO
+  FOTO
+}
+
+model GaleriItem {
+  id        String         @id @default(cuid())
+  kategori  KategoriGaleri
+  title     String
+  desc      String?        @db.Text
+  tag       String?
+  tanggal   DateTime?
+  imageSrc  String
+  urutan    Int            @default(0)
+  createdAt DateTime       @default(now())
+
+  @@index([kategori])
+}
+
+model FooterKontak {
+  id             String   @id @default(cuid())
+  alamat         String
+  telepon        String
+  email          String
+  jamOperasional String?
+  mapEmbedUrl    String?
+  facebook       String?
+  instagram      String?
+  updatedAt      DateTime @updatedAt
+}
