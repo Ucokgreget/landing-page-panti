@@ -193,29 +193,6 @@ export default function TentangContent({ data }: { data: TentangData }) {
             })}
           </div>
         </section>
-
-        {/* CTA Section */}
-        <section className="clay-card rounded-3xl mb-32 overflow-hidden relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-clay-primary/10 to-clay-secondary/10 -z-10" />
-          <div className="p-12 md:p-20 text-center flex flex-col items-center">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-clay-primary mb-6">
-              Siap Melangkah Bersama Kami?
-            </h2>
-            <p className="text-lg text-clay-on-surface-variant max-w-2xl mb-10">
-              Dapatkan informasi lebih lanjut mengenai prosedur pendaftaran dan
-              kunjungan ke UPTD Panti Sosial Rehabilitasi Sensorik.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <button className="clay-button-primary px-10 py-4 rounded-full text-white font-bold flex items-center gap-2">
-                Hubungi Kami{" "}
-                <span className="material-symbols-outlined">send</span>
-              </button>
-              <button className="bg-white px-10 py-4 rounded-full text-clay-primary font-bold shadow-[0_10px_20px_rgba(0,101,120,0.1),inset_2px_2px_4px_rgba(255,255,255,1)] hover:scale-105 transition-all">
-                Unduh Brosur
-              </button>
-            </div>
-          </div>
-        </section>
       </main>
 
       {/* Image Modal */}
