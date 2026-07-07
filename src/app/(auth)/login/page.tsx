@@ -1,16 +1,43 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Logo from "@/assets/logo/logo";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => setLoading(false), 2000);
+    setError("");
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Login gagal");
+        setLoading(false);
+        return;
+      }
+
+      router.push("/dashboard");
+    } catch {
+      setError("Terjadi kesalahan jaringan");
+      setLoading(false);
+    }
   }
 
   return (
@@ -42,24 +69,33 @@ export default function LoginPage() {
               </p>
             </div>
 
+            {/* Error Message */}
+            {error && (
+              <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm font-semibold text-center">
+                {error}
+              </div>
+            )}
+
             {/* Form */}
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-2">
                 <label
                   className="font-bold text-sm text-clay-on-surface-variant ml-4"
-                  htmlFor="username"
+                  htmlFor="email"
                 >
-                  Nama Pengguna
+                  Email
                 </label>
                 <div className="relative">
                   <input
                     className="w-full clay-input bg-clay-surface-container-lowest rounded-full px-6 py-4 text-clay-on-surface placeholder:text-clay-outline-variant"
-                    id="username"
-                    placeholder="Masukkan nama pengguna"
-                    type="text"
+                    id="email"
+                    name="email"
+                    placeholder="Masukkan email"
+                    type="email"
+                    required
                   />
                   <span className="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-clay-outline-variant">
-                    person
+                    mail
                   </span>
                 </div>
               </div>
@@ -75,8 +111,10 @@ export default function LoginPage() {
                   <input
                     className="w-full clay-input bg-clay-surface-container-lowest rounded-full px-6 py-4 text-clay-on-surface placeholder:text-clay-outline-variant"
                     id="password"
+                    name="password"
                     placeholder="••••••••"
                     type="password"
+                    required
                   />
                   <span className="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-clay-outline-variant">
                     lock

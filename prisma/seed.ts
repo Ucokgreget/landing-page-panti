@@ -1,5 +1,6 @@
 import { PrismaClient, Prisma, KategoriGaleri } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import bcrypt from "bcryptjs";
 import "dotenv/config";
 
 const adapter = new PrismaPg({
@@ -96,10 +97,11 @@ const galeriFotoData: Prisma.GaleriItemCreateInput[] = [
 
 export async function main() {
   for (const u of userData) {
+    const hashedPassword = await bcrypt.hash(u.password, 10);
     await prisma.user.upsert({
       where: { email: u.email },
-      update: {},
-      create: u,
+      update: { password: hashedPassword },
+      create: { ...u, password: hashedPassword },
     });
   }
 
